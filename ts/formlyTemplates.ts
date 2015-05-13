@@ -50,6 +50,12 @@ module ap.formly {
       });
 
       formlyConfigProvider.setType({
+        name: 'attachments',
+        wrapper: ['bootstrapLabel', 'bootstrapHasError'],
+        template: `<span ap-attachments data-list-item="model"></span>` //TODO: Convert apAttachments to use element selector instead of attribute
+      });
+
+      formlyConfigProvider.setType({
         name: 'boolean',
         wrapper: ['bootstrapLabel', 'bootstrapHasError'],
         template: `
