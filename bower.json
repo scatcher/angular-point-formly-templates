@@ -1,12 +1,18 @@
 {
   "name": "angular-point-formly-templates",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "homepage": "https://github.com/scatcher/angular-point-formly-templates",
   "authors": [
     "Scott Hatcher <scott@scotthatcher.com>"
   ],
   "description": "A collection of formly templates designed to support angular-point projects.",
   "main": "src/index.ts",
+  "dependencies": {
+    "angular-formly": "^6.3.4",
+    "angular-formly-templates-bootstrap": "^4.0.9",
+    "api-check": "^7.2.2",
+    "angular-point": "^3.0.3"
+  },
   "keywords": [
     "Angular",
     "angular-point",
@@ -19,8 +25,5 @@
     "bower_components",
     "test",
     "tests"
-  ],
-  "dependencies": {
-    "angular-point": "^3.0.3"
-  }
+  ]
 }
