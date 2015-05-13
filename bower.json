@@ -1,0 +1,26 @@
+{
+  "name": "angular-point-formly-templates",
+  "version": "1.0.0",
+  "homepage": "https://github.com/scatcher/angular-point-formly-templates",
+  "authors": [
+    "Scott Hatcher <scott@scotthatcher.com>"
+  ],
+  "description": "A collection of formly templates designed to support angular-point projects.",
+  "main": "src/index.ts",
+  "keywords": [
+    "Angular",
+    "angular-point",
+    "angular-formly"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular-point": "^3.0.3"
+  }
+}

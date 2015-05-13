@@ -1,0 +1,24 @@
+{
+  "name": "angular-point-formly-templates",
+  "version": "1.0.0",
+  "description": "A collection of formly templates designed to support angular-point projects.",
+  "main": "src/index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/scatcher/angular-point-formly-templates.git"
+  },
+  "keywords": [
+    "Angular",
+    "angular-point",
+    "formly"
+  ],
+  "author": "Scott Hatcher",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/scatcher/angular-point-formly-templates/issues"
+  },
+  "homepage": "https://github.com/scatcher/angular-point-formly-templates"
+}
