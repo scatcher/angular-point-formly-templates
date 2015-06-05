@@ -7,7 +7,7 @@ module ap.formly {
     angular
         .module('angularPoint')
         .config(ap.formly.FormlyTemplates)
-        .directive('apLookup', ap.formly.APLookup)
-        .directive('apChoice', ap.formly.APChoice);
+        .directive('apLookup', ap.formly.APFormlyLookup)
+        .directive('apChoice', ap.formly.APFormlyChoice);
 
 }

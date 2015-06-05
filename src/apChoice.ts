@@ -1,7 +1,7 @@
 module ap.formly {
   'use strict';
 
-  export function APChoice() {
+  export function APFormlyChoice() {
 
     var directive = {
       scope: {
@@ -65,7 +65,7 @@ module ap.formly {
       if($scope.options){
         if($scope.options.then) {
           /** Options aren't resolved yet */
-          vm.options.then(function (options) {
+          $scope.options.then(function (options) {
             vm.options = createLookupArray(options);
             vm.loading = false;
           });
