@@ -79,6 +79,8 @@ var ap;
                 scope: {
                     key: '=',
                     listItem: '=',
+                    lookupIdProperty: '=',
+                    lookupValueProperty: '=',
                     multi: '=',
                     options: '='
                 },
@@ -90,8 +92,7 @@ var ap;
             return directive;
         }
         formly.APFormlyLookup = APFormlyLookup;
-        function createLookupArray(options, lookupProperty) {
-            if (lookupProperty === void 0) { lookupProperty = 'title'; }
+        function createLookupArray(options, lookupIdProperty, lookupValueProperty) {
             var sortedLookupValues;
             var sampleListItem = _.sample(options);
             if (sampleListItem.hasOwnProperty('lookupId')) {
@@ -99,11 +100,18 @@ var ap;
                 sortedLookupValues = _.sortBy(options, 'lookupValue');
             }
             else {
-                /** List items not yet converted into Lookup objects so convert and sort */
-                var sortedOptions = _.sortBy(options, lookupProperty);
-                sortedLookupValues = _.map(sortedOptions, function (listItem) {
-                    return { lookupValue: listItem[lookupProperty], lookupId: listItem.id };
-                });
+                sortedLookupValues = _.chain(options)
+                    .map(function (listItem) {
+                    return {
+                        //Default is to use title for lookupValue and id for lookupId but optionally can pass in the property to use for either or
+                        //a funtion to return the value
+                        lookupId: _.isFunction(lookupIdProperty) ? lookupIdProperty(listItem) : listItem[lookupIdProperty],
+                        //can be calculated with either a function or a property name
+                        lookupValue: _.isFunction(lookupValueProperty) ? lookupValueProperty(listItem) : listItem[lookupValueProperty]
+                    };
+                })
+                    .sortBy('lookupValue')
+                    .value();
             }
             return sortedLookupValues;
         }
@@ -111,18 +119,21 @@ var ap;
             function APLookupController($scope) {
                 this.loading = true;
                 var vm = this;
+                //The property to use as the lookupValue if we need to build a Lookup[]
+                var lookupIdProperty = $scope.lookupIdProperty || 'id';
+                var lookupValueProperty = $scope.lookupValueProperty || 'title';
                 vm.listItem = $scope.listItem;
                 vm.key = $scope.key;
                 vm.multi = $scope.multi;
                 if ($scope.options.then) {
                     /** Options aren't resolved yet */
                     $scope.options.then(function (options) {
-                        vm.options = createLookupArray(options);
+                        vm.options = createLookupArray(options, lookupIdProperty, lookupValueProperty);
                         vm.loading = false;
                     });
                 }
                 else {
-                    vm.options = createLookupArray($scope.options);
+                    vm.options = createLookupArray($scope.options, lookupIdProperty, lookupValueProperty);
                     vm.loading = false;
                 }
             }
@@ -143,12 +154,12 @@ var ap;
                 formlyConfigProvider.setType({
                     name: 'lookup',
                     wrapper: ['bootstrapLabel', 'bootstrapHasError'],
-                    template: "<ap-lookup list-item=\"model\" key=\"options.key\" multi=\"false\" options=\"to.options\"></ap-lookup>"
+                    template: "<ap-lookup list-item=\"model\" key=\"options.key\" multi=\"false\" lookup-value-property=\"to.lookupValueProperty\" lookup-id-property=\"to.lookupIdProperty\" options=\"to.options\"></ap-lookup>"
                 });
                 formlyConfigProvider.setType({
                     name: 'lookup-multi',
                     wrapper: ['bootstrapLabel', 'bootstrapHasError'],
-                    template: "<ap-lookup list-item=\"model\" key=\"options.key\" multi=\"true\" options=\"to.options\"></ap-lookup>"
+                    template: "<ap-lookup list-item=\"model\" key=\"options.key\" multi=\"true\" lookup-value-property=\"to.lookupValueProperty\" lookup-id-property=\"to.lookupIdProperty\" options=\"to.options\"></ap-lookup>"
                 });
                 formlyConfigProvider.setType({
                     name: 'ui-date',

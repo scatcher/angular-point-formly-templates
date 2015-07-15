@@ -1,6 +1,6 @@
 {
   "name": "angular-point-formly-templates",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "description": "A collection of formly templates designed to support angular-point projects.",
   "main": "dist/angular-point-formly-templates.js",
   "scripts": {

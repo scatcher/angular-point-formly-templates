@@ -10,13 +10,13 @@ module ap.formly {
       formlyConfigProvider.setType({
         name: 'lookup',
         wrapper: ['bootstrapLabel', 'bootstrapHasError'],
-        template: `<ap-lookup list-item="model" key="options.key" multi="false" options="to.options"></ap-lookup>`
+        template: `<ap-lookup list-item="model" key="options.key" multi="false" lookup-value-property="to.lookupValueProperty" lookup-id-property="to.lookupIdProperty" options="to.options"></ap-lookup>`
       });
 
       formlyConfigProvider.setType({
         name: 'lookup-multi',
         wrapper: ['bootstrapLabel', 'bootstrapHasError'],
-        template: `<ap-lookup list-item="model" key="options.key" multi="true" options="to.options"></ap-lookup>`
+        template: `<ap-lookup list-item="model" key="options.key" multi="true" lookup-value-property="to.lookupValueProperty" lookup-id-property="to.lookupIdProperty" options="to.options"></ap-lookup>`
       });
 
       formlyConfigProvider.setType({
