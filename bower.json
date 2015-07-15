@@ -8,10 +8,10 @@
   "description": "A collection of formly templates designed to support angular-point projects.",
   "main": "dist/angular-point-formly-templates.js",
   "dependencies": {
-    "angular-formly": "^6.3.4",
-    "angular-formly-templates-bootstrap": "^4.0.9",
-    "api-check": "^7.2.2",
-    "angular-point": "^3.0.3"
+    "angular-formly": "^6.18.1",
+    "angular-formly-templates-bootstrap": "^4.4.1",
+    "api-check": "^7.5.0",
+    "angular-point": "^3.5.6"
   },
   "keywords": [
     "Angular",
