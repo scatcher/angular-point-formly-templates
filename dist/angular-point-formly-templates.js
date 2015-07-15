@@ -1,3 +1,4 @@
+/// <reference path="../typings/tsd.d.ts" />
 var ap;
 (function (ap) {
     var formly;
@@ -14,7 +15,7 @@ var ap;
                 controller: APChoiceController,
                 controllerAs: 'vm',
                 template: '' +
-                    "<div ng-if=\"!vm.loading\">\n                <div ng-if=\"vm.multi\">\n                    <div ui-select multiple ng-model=\"vm.options[vm.key]\">\n                        <div ui-select-match placeholder=\"{{ vm.placeholder }}\">{{ $item }}</div>\n                        <div ui-select-choices data-repeat=\"choice in vm.options | filter:$select.search\n                            track by $index\">{{ choice }}</div>\n                    </div>\n                </div>\n                <div ng-if=\"!vm.multi\">\n                    <div ui-select ng-model=\"vm.options[vm.key]\">\n                        <div ui-select-match>{{ $select.selected }}</div>\n                        <div ui-select-choices data-repeat=\"choice in vm.options | filter:$select.search\n                            track by $index\">{{ choice }}</div>\n                    </div>\n                </div>\n            </div>\n            <span class=\"form-control\" ng-if=\"vm.loading\">loading...</span>"
+                    "<div ng-if=\"!vm.loading\">\n          <div ng-if=\"vm.multi\">\n              <div ui-select multiple ng-model=\"vm.listItem[vm.key]\">\n                  <div ui-select-match placeholder=\"{{ vm.placeholder }}\">{{ $item }}</div>\n                  <div ui-select-choices data-repeat=\"choice in vm.options | filter:$select.search\n                      track by $index\">{{ choice }}</div>\n              </div>\n          </div>\n          <div ng-if=\"!vm.multi\">\n              <div ui-select ng-model=\"vm.listItem[vm.key]\">\n                  <div ui-select-match>{{ $select.selected }}</div>\n                  <div ui-select-choices data-repeat=\"choice in vm.options | filter:$select.search\n                      track by $index\">{{ choice }}</div>\n              </div>\n          </div>\n      </div>\n      <span class=\"form-control\" ng-if=\"vm.loading\">loading...</span>"
             };
             return directive;
         }
@@ -25,7 +26,6 @@ var ap;
         var APChoiceController = (function () {
             function APChoiceController($scope) {
                 this.loading = true;
-                this.options = [];
                 var vm = this;
                 vm.listItem = $scope.listItem;
                 vm.key = $scope.key;
@@ -67,6 +67,7 @@ var ap;
     })(formly = ap.formly || (ap.formly = {}));
 })(ap || (ap = {}));
 
+/// <reference path="../typings/tsd.d.ts" />
 var ap;
 (function (ap) {
     var formly;
@@ -93,15 +94,15 @@ var ap;
             if (lookupProperty === void 0) { lookupProperty = 'title'; }
             var sortedLookupValues;
             var sampleListItem = _.sample(options);
-            if (sampleListItem && sampleListItem.lookupId) {
+            if (sampleListItem.hasOwnProperty('lookupId')) {
                 /** Already valid lookup objects */
                 sortedLookupValues = _.sortBy(options, 'lookupValue');
             }
             else {
-                /** Not yet converted into Lookup objects so convert and sort */
+                /** List items not yet converted into Lookup objects so convert and sort */
                 var sortedOptions = _.sortBy(options, lookupProperty);
-                sortedLookupValues = _.map(sortedOptions, function (lookup) {
-                    return { lookupValue: lookup[lookupProperty], lookupId: lookup.id };
+                sortedLookupValues = _.map(sortedOptions, function (listItem) {
+                    return { lookupValue: listItem[lookupProperty], lookupId: listItem.id };
                 });
             }
             return sortedLookupValues;

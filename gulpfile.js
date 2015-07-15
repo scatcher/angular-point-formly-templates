@@ -24,7 +24,7 @@ gulp.task('build', function () {
 
     return tsResult.js
             .pipe(concat(pkg.name + '.js')) // You can use other plugins that also support gulp-sourcemaps
-            .pipe(sourcemaps.write('.', { sourceRoot: '/' })) // Now the sourcemaps are added along side the .js file
+            .pipe(sourcemaps.write('.')) // Now the sourcemaps are added along side the .js file
             .pipe(gulp.dest('./dist'));
 
 });

@@ -1,3 +1,4 @@
+/// <reference path="../typings/tsd.d.ts" />
 module ap.formly {
     'use strict';
 
@@ -37,47 +38,47 @@ module ap.formly {
         return directive;
     }
 
-    interface IControllerScope extends ng.IScope{
-        key:string;
-        listItem:ap.IListItem;
-        multi:boolean;
-        options:Object[] | ap.IndexedCache<ap.IListItem> | ng.IPromise;
+    interface IControllerScope extends ng.IScope {
+        key: string;
+        listItem: ListItem<any>;
+        multi: boolean;
+        options: Object[]| IndexedCache<ListItem<any>> | ng.IPromise<Object[]| IndexedCache<ListItem<any>>>;
     }
 
 
-    function createLookupArray(options, lookupProperty = 'title') {
+    function createLookupArray(options, lookupProperty = 'title'): Lookup[] {
         var sortedLookupValues;
         var sampleListItem = _.sample(options);
-        if(sampleListItem && sampleListItem.lookupId) {
+        if ( sampleListItem.hasOwnProperty('lookupId') ) {
             /** Already valid lookup objects */
             sortedLookupValues = _.sortBy(options, 'lookupValue');
         } else {
-            /** Not yet converted into Lookup objects so convert and sort */
+            /** List items not yet converted into Lookup objects so convert and sort */
             var sortedOptions = _.sortBy(options, lookupProperty);
-            sortedLookupValues = _.map(sortedOptions, function (lookup) {
-                return {lookupValue: lookup[lookupProperty], lookupId: lookup.id};
+            sortedLookupValues = _.map(sortedOptions, function(listItem) {
+                return { lookupValue: listItem[lookupProperty], lookupId: listItem.id };
             });
         }
         return sortedLookupValues;
     }
 
 
-    class APLookupController{
-        key:string;
-        listItem:Object;
+    class APLookupController {
+        key: string;
+        listItem: Object;
         loading = true;
-        multi:boolean;
-        options:Object[] | ap.IndexedCache<ap.IListItem> | ng.IPromise;
-        constructor($scope:IControllerScope) {
+        multi: boolean;
+        options: Lookup[];
+        constructor($scope: IControllerScope) {
             var vm = this;
 
             vm.listItem = $scope.listItem;
             vm.key = $scope.key;
             vm.multi = $scope.multi;
 
-            if($scope.options.then) {
+            if ($scope.options.then) {
                 /** Options aren't resolved yet */
-                $scope.options.then(function (options) {
+                $scope.options.then(function(options) {
                     vm.options = createLookupArray(options);
                     vm.loading = false;
                 });
