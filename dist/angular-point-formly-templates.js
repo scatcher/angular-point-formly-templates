@@ -144,6 +144,7 @@ var ap;
 
 /// <reference path="apLookup.ts" />
 /// <reference path="apChoice.ts" />
+/// <reference path="../typings/tsd.d.ts" />
 var ap;
 (function (ap) {
     var formly;
@@ -194,7 +195,7 @@ var ap;
                 formlyConfigProvider.setType({
                     name: 'boolean',
                     wrapper: ['bootstrapLabel', 'bootstrapHasError'],
-                    template: "\n                <button class=\"btn btn-link\"\n                        ng-click=\"model[options.key] = !model[options.key]\">\n                    <i class=\"fa fa-2x {{ model[options.key] ? 'fa-check-square-o' : 'fa-square-o' }}\"></i>\n                </button>\n                <!--Hidden checkbox handles validation-->\n                <input type=\"checkbox\"\n                       class=\"hidden\"\n                       ng-model=\"model[options.key]\"\n                       ui-validate=\"'validate($value)'\">"
+                    template: "<br/><button class=\"btn btn-link\"\n                            ng-click=\"model[options.key] = !model[options.key]\">\n                        <i class=\"fa fa-2x {{ model[options.key] ? 'fa-check-square-o' : 'fa-square-o' }}\"></i>\n                    </button>\n                    <!--Hidden checkbox handles validation-->\n                    <input type=\"checkbox\"\n                           class=\"hidden\"\n                           ng-model=\"model[options.key]\"\n                           ui-validate=\"'validate($value)'\">"
                 });
             }
             return FormlyTemplates;
