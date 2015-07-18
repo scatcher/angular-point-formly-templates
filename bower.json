@@ -1,6 +1,6 @@
 {
   "name": "angular-point-formly-templates",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "homepage": "https://github.com/scatcher/angular-point-formly-templates",
   "authors": [
     "Scott Hatcher <scott@scotthatcher.com>"
@@ -9,7 +9,7 @@
   "main": "dist/angular-point-formly-templates.js",
   "dependencies": {
     "angular-formly": "^6.18.1",
-    "angular-formly-templates-bootstrap": "^4.4.1",
+    "angular-formly-templates-bootstrap": "^5.0.2",
     "api-check": "^7.5.0",
     "angular-point": "^3.5.6"
   },

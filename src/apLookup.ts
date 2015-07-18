@@ -1,4 +1,5 @@
 /// <reference path="../typings/tsd.d.ts" />
+
 module ap.formly {
     'use strict';
 
@@ -46,7 +47,7 @@ module ap.formly {
         lookupIdProperty: { (listItem: ListItem<any>): string } | string;
         lookupValueProperty: { (listItem: ListItem<any>): string } | string;
         multi: boolean;
-        options: Object[]| IndexedCache<ListItem<any>> | ng.IPromise<Object[]| IndexedCache<ListItem<any>>>;
+        options: Object[] | IndexedCache<ListItem<any>> | ng.IPromise<Object[] | IndexedCache<ListItem<any>>>;
     }
 
 

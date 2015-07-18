@@ -1,11 +1,12 @@
 /// <reference path="apLookup.ts" />
 /// <reference path="apChoice.ts" />
+/// <reference path="../typings/tsd.d.ts" />
 
 module ap.formly {
     'use strict';
 
   export class FormlyTemplates{
-    constructor(formlyConfigProvider) {
+    constructor(formlyConfigProvider: AngularFormly.IFormlyConfig) {
 
       formlyConfigProvider.setType({
         name: 'lookup',
@@ -58,16 +59,15 @@ module ap.formly {
       formlyConfigProvider.setType({
         name: 'boolean',
         wrapper: ['bootstrapLabel', 'bootstrapHasError'],
-        template: `
-                <button class="btn btn-link"
-                        ng-click="model[options.key] = !model[options.key]">
-                    <i class="fa fa-2x {{ model[options.key] ? 'fa-check-square-o' : 'fa-square-o' }}"></i>
-                </button>
-                <!--Hidden checkbox handles validation-->
-                <input type="checkbox"
-                       class="hidden"
-                       ng-model="model[options.key]"
-                       ui-validate="'validate($value)'">`
+        template: `<br/><button class="btn btn-link"
+                            ng-click="model[options.key] = !model[options.key]">
+                        <i class="fa fa-2x {{ model[options.key] ? 'fa-check-square-o' : 'fa-square-o' }}"></i>
+                    </button>
+                    <!--Hidden checkbox handles validation-->
+                    <input type="checkbox"
+                           class="hidden"
+                           ng-model="model[options.key]"
+                           ui-validate="'validate($value)'">`
       });
     }
   }
