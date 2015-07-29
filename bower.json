@@ -9,7 +9,7 @@
   "main": "dist/angular-point-formly-templates.js",
   "dependencies": {
     "angular-formly": "^6.18.1",
-    "angular-formly-templates-bootstrap": "^5.0.2",
+    "angular-formly-templates-bootstrap": "^6.0.0",
     "api-check": "^7.5.0",
     "angular-point": "^3.5.6"
   },
