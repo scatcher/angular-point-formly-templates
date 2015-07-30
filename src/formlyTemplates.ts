@@ -11,13 +11,13 @@ module ap.formly {
       formlyConfigProvider.setType({
         name: 'lookup',
         wrapper: ['bootstrapLabel', 'bootstrapHasError'],
-        template: `<ap-lookup list-item="model" key="options.key" multi="false" lookup-value-property="to.lookupValueProperty" lookup-id-property="to.lookupIdProperty" options="to.options"></ap-lookup>`
+        template: `<ap-lookup list-item="model" key="options.key" multi="false" to="to"></ap-lookup>`
       });
 
       formlyConfigProvider.setType({
         name: 'lookup-multi',
         wrapper: ['bootstrapLabel', 'bootstrapHasError'],
-        template: `<ap-lookup list-item="model" key="options.key" multi="true" lookup-value-property="to.lookupValueProperty" lookup-id-property="to.lookupIdProperty" options="to.options"></ap-lookup>`
+        template: `<ap-lookup list-item="model" key="options.key" multi="true" to="to"></ap-lookup>`
       });
 
       formlyConfigProvider.setType({
@@ -41,13 +41,13 @@ module ap.formly {
       formlyConfigProvider.setType({
         name: 'choice',
         wrapper: ['bootstrapLabel', 'bootstrapHasError'],
-        template: `<ap-choice list-item="model" key="options.key" options="to.options"></ap-choice>`
+        template: `<ap-choice list-item="model" key="options.key" to="to"></ap-choice>`
       });
 
       formlyConfigProvider.setType({
         name: 'choice-multi',
         wrapper: ['bootstrapLabel', 'bootstrapHasError'],
-        template: `<ap-choice list-item="model" key="options.key" options="to.options" multi="true"></ap-choice>`
+        template: `<ap-choice list-item="model" key="options.key" multi="true" to="to"></ap-choice>`
       });
 
       formlyConfigProvider.setType({

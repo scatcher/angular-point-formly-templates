@@ -10,8 +10,9 @@ module ap.formly {
         key: '=',
         listItem: '=',
         multi: '=',
-        options: '='
+        to: '=' //Template Options
       },
+      bindToController: true,
       controller: APChoiceController,
       controllerAs: 'vm',
       template: '' +
@@ -25,7 +26,7 @@ module ap.formly {
           </div>
           <div ng-if="!vm.multi">
               <div ui-select ng-model="vm.listItem[vm.key]">
-                  <div ui-select-match>{{ $select.selected }}</div>
+                  <div ui-select-match placeholder="{{ vm.placeholder }}">{{ $select.selected }}</div>
                   <div ui-select-choices data-repeat="choice in vm.options | filter:$select.search
                       track by $index">{{ choice }}</div>
               </div>
@@ -37,16 +38,14 @@ module ap.formly {
     return directive;
   }
 
-  interface IControllerScope extends ng.IScope {
-    listItem: ListItem<any>;
-    options: ng.IPromise<string[]> | string[];
-    key: string;
-    multi: boolean;
+  function createChoiceArray(options: string[] = []) {
+    return options.sort();
   }
 
-
-  function createLookupArray(options: string[]) {
-    return options.sort();
+  interface ITemplateOptions extends AngularFormly.ITemplateOptions {
+    lookupIdProperty: { (listItem: ListItem<any>): string } | string;
+    lookupValueProperty: { (listItem: ListItem<any>): string } | string;
+    options: Object[]| IndexedCache<ListItem<any>> | ng.IPromise<Object[]| IndexedCache<ListItem<any>>>;
   }
 
 
@@ -55,30 +54,29 @@ module ap.formly {
     loading = true;
     listItem: ListItem<any>;
     multi: boolean;
-    options: ng.IPromise<string[]> | string[];
-    constructor($scope: IControllerScope) {
+    options: string[];
+    placeholder: string | number;
+    to: ITemplateOptions;
+    constructor() {
       var vm = this;
-
-      vm.listItem = $scope.listItem;
-      vm.key = $scope.key;
-      vm.multi = $scope.multi;
+      vm.placeholder = vm.to.placeholder || '';
       var fieldDefinition = vm.listItem.getFieldDefinition(vm.key);
 
-      if ($scope.options) {
-        if ($scope.options.then) {
+      if (vm.to.options) {
+        if (vm.to.options.then) {
           /** Options aren't resolved yet */
-          $scope.options.then(function(options: string[]) {
-            vm.options = createLookupArray(options);
+          vm.to.options.then(function(options: string[]) {
+            vm.options = createChoiceArray(options);
             vm.loading = false;
           });
         } else {
           /** Options passed through directly */
-          vm.options = createLookupArray($scope.options);
+          vm.options = createChoiceArray(vm.to.options);
           vm.loading = false;
         }
       } else if (fieldDefinition.choices || fieldDefinition.Choices) {
         /** Options available on field definition within model */
-        vm.options = createLookupArray(fieldDefinition.choices || fieldDefinition.Choices);
+        vm.options = createChoiceArray(fieldDefinition.choices || fieldDefinition.Choices);
         vm.loading = false;
       } else {
         /** Last chance, get list definition from server and look for choices */
@@ -87,7 +85,7 @@ module ap.formly {
         model.extendListMetadata()
           .then(function() {
             if (fieldDefinition.choices || fieldDefinition.Choices) {
-              vm.options = createLookupArray(fieldDefinition.choices || fieldDefinition.Choices);
+              vm.options = createChoiceArray(fieldDefinition.choices || fieldDefinition.Choices);
               vm.loading = false;
             }
           })

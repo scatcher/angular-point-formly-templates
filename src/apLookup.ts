@@ -10,26 +10,25 @@ module ap.formly {
             scope: {
                 key: '=',
                 listItem: '=',
-                lookupIdProperty: '=',
-                lookupValueProperty: '=',
                 multi: '=',
-                options: '='
+                to: '='
 
             },
+            bindToController: true,
             controller: APLookupController,
             controllerAs: 'vm',
             template: '' +
             `<div ng-if="!vm.loading">
                 <div ng-if="vm.multi">
                     <div ui-select multiple ng-model="vm.listItem[vm.key]">
-                        <div ui-select-match>{{ $item.lookupValue }}</div>
+                        <div ui-select-match placeholder="{{ vm.placeholder }}">{{ $item.lookupValue }}</div>
                         <div ui-select-choices data-repeat="lookup in vm.options | filter:{lookupValue: $select.search}
                             track by lookup.lookupId">{{ lookup.lookupValue }}</div>
                     </div>
                 </div>
                 <div ng-if="!vm.multi">
                     <div ui-select ng-model="vm.listItem[vm.key]">
-                        <div ui-select-match>{{ $select.selected.lookupValue }}</div>
+                        <div ui-select-match placeholder="{{ vm.placeholder }}">{{ $select.selected.lookupValue }}</div>
                         <div ui-select-choices data-repeat="lookup in vm.options | filter:{lookupValue: $select.search}
                             track by lookup.lookupId">{{ lookup.lookupValue }}</div>
                     </div>
@@ -40,16 +39,6 @@ module ap.formly {
         };
         return directive;
     }
-
-    interface IControllerScope extends ng.IScope {
-        key: string;
-        listItem: ListItem<any>;
-        lookupIdProperty: { (listItem: ListItem<any>): string } | string;
-        lookupValueProperty: { (listItem: ListItem<any>): string } | string;
-        multi: boolean;
-        options: Object[] | IndexedCache<ListItem<any>> | ng.IPromise<Object[] | IndexedCache<ListItem<any>>>;
-    }
-
 
     function createLookupArray(options, lookupIdProperty: { (listItem: ListItem<any>): string } | string, lookupValueProperty: { (listItem: ListItem<any>): string } | string): Lookup[] {
         var sortedLookupValues;
@@ -73,33 +62,38 @@ module ap.formly {
         }
         return sortedLookupValues;
     }
+    
+    interface ITemplateOptions extends AngularFormly.ITemplateOptions {
+        lookupIdProperty: { (listItem: ListItem<any>): string } | string;
+        lookupValueProperty: { (listItem: ListItem<any>): string } | string;
+        options: Object[] | IndexedCache<ListItem<any>> | ng.IPromise<Object[] | IndexedCache<ListItem<any>>>;
+    }
 
 
     class APLookupController {
         key: string;
         listItem: Object;
-        lookupValueProperty: string;
         loading = true;
         multi: boolean;
         options: Lookup[];
-        constructor($scope: IControllerScope) {
+        placeholder: string | number;
+        to: ITemplateOptions;
+        constructor() {
             var vm = this;
             //The property to use as the lookupValue if we need to build a Lookup[]
-            var lookupIdProperty = $scope.lookupIdProperty || 'id';
-            var lookupValueProperty = $scope.lookupValueProperty || 'title';
+            var lookupIdProperty = vm.to.lookupIdProperty || 'id';
+            var lookupValueProperty = vm.to.lookupValueProperty || 'title';
+            
+            vm.placeholder = vm.to.placeholder || '';
 
-            vm.listItem = $scope.listItem;
-            vm.key = $scope.key;
-            vm.multi = $scope.multi;
-
-            if ($scope.options.then) {
+            if (vm.to.options.then) {
                 /** Options aren't resolved yet */
-                $scope.options.then(function(options) {
+                vm.to.options.then(function(options) {
                     vm.options = createLookupArray(options, lookupIdProperty, lookupValueProperty);
                     vm.loading = false;
                 });
             } else {
-                vm.options = createLookupArray($scope.options, lookupIdProperty, lookupValueProperty);
+                vm.options = createLookupArray(vm.to.options, lookupIdProperty, lookupValueProperty);
                 vm.loading = false;
             }
 

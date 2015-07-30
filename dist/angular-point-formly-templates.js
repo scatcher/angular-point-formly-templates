@@ -10,44 +10,44 @@ var ap;
                     key: '=',
                     listItem: '=',
                     multi: '=',
-                    options: '='
+                    to: '=' //Template Options
                 },
+                bindToController: true,
                 controller: APChoiceController,
                 controllerAs: 'vm',
                 template: '' +
-                    "<div ng-if=\"!vm.loading\">\n          <div ng-if=\"vm.multi\">\n              <div ui-select multiple ng-model=\"vm.listItem[vm.key]\">\n                  <div ui-select-match placeholder=\"{{ vm.placeholder }}\">{{ $item }}</div>\n                  <div ui-select-choices data-repeat=\"choice in vm.options | filter:$select.search\n                      track by $index\">{{ choice }}</div>\n              </div>\n          </div>\n          <div ng-if=\"!vm.multi\">\n              <div ui-select ng-model=\"vm.listItem[vm.key]\">\n                  <div ui-select-match>{{ $select.selected }}</div>\n                  <div ui-select-choices data-repeat=\"choice in vm.options | filter:$select.search\n                      track by $index\">{{ choice }}</div>\n              </div>\n          </div>\n      </div>\n      <span class=\"form-control\" ng-if=\"vm.loading\">loading...</span>"
+                    "<div ng-if=\"!vm.loading\">\n          <div ng-if=\"vm.multi\">\n              <div ui-select multiple ng-model=\"vm.listItem[vm.key]\">\n                  <div ui-select-match placeholder=\"{{ vm.placeholder }}\">{{ $item }}</div>\n                  <div ui-select-choices data-repeat=\"choice in vm.options | filter:$select.search\n                      track by $index\">{{ choice }}</div>\n              </div>\n          </div>\n          <div ng-if=\"!vm.multi\">\n              <div ui-select ng-model=\"vm.listItem[vm.key]\">\n                  <div ui-select-match placeholder=\"{{ vm.placeholder }}\">{{ $select.selected }}</div>\n                  <div ui-select-choices data-repeat=\"choice in vm.options | filter:$select.search\n                      track by $index\">{{ choice }}</div>\n              </div>\n          </div>\n      </div>\n      <span class=\"form-control\" ng-if=\"vm.loading\">loading...</span>"
             };
             return directive;
         }
         formly.APFormlyChoice = APFormlyChoice;
-        function createLookupArray(options) {
+        function createChoiceArray(options) {
+            if (options === void 0) { options = []; }
             return options.sort();
         }
         var APChoiceController = (function () {
-            function APChoiceController($scope) {
+            function APChoiceController() {
                 this.loading = true;
                 var vm = this;
-                vm.listItem = $scope.listItem;
-                vm.key = $scope.key;
-                vm.multi = $scope.multi;
+                vm.placeholder = vm.to.placeholder || '';
                 var fieldDefinition = vm.listItem.getFieldDefinition(vm.key);
-                if ($scope.options) {
-                    if ($scope.options.then) {
+                if (vm.to.options) {
+                    if (vm.to.options.then) {
                         /** Options aren't resolved yet */
-                        $scope.options.then(function (options) {
-                            vm.options = createLookupArray(options);
+                        vm.to.options.then(function (options) {
+                            vm.options = createChoiceArray(options);
                             vm.loading = false;
                         });
                     }
                     else {
                         /** Options passed through directly */
-                        vm.options = createLookupArray($scope.options);
+                        vm.options = createChoiceArray(vm.to.options);
                         vm.loading = false;
                     }
                 }
                 else if (fieldDefinition.choices || fieldDefinition.Choices) {
                     /** Options available on field definition within model */
-                    vm.options = createLookupArray(fieldDefinition.choices || fieldDefinition.Choices);
+                    vm.options = createChoiceArray(fieldDefinition.choices || fieldDefinition.Choices);
                     vm.loading = false;
                 }
                 else {
@@ -56,7 +56,7 @@ var ap;
                     model.extendListMetadata()
                         .then(function () {
                         if (fieldDefinition.choices || fieldDefinition.Choices) {
-                            vm.options = createLookupArray(fieldDefinition.choices || fieldDefinition.Choices);
+                            vm.options = createChoiceArray(fieldDefinition.choices || fieldDefinition.Choices);
                             vm.loading = false;
                         }
                     });
@@ -79,15 +79,14 @@ var ap;
                 scope: {
                     key: '=',
                     listItem: '=',
-                    lookupIdProperty: '=',
-                    lookupValueProperty: '=',
                     multi: '=',
-                    options: '='
+                    to: '='
                 },
+                bindToController: true,
                 controller: APLookupController,
                 controllerAs: 'vm',
                 template: '' +
-                    "<div ng-if=\"!vm.loading\">\n                <div ng-if=\"vm.multi\">\n                    <div ui-select multiple ng-model=\"vm.listItem[vm.key]\">\n                        <div ui-select-match>{{ $item.lookupValue }}</div>\n                        <div ui-select-choices data-repeat=\"lookup in vm.options | filter:{lookupValue: $select.search}\n                            track by lookup.lookupId\">{{ lookup.lookupValue }}</div>\n                    </div>\n                </div>\n                <div ng-if=\"!vm.multi\">\n                    <div ui-select ng-model=\"vm.listItem[vm.key]\">\n                        <div ui-select-match>{{ $select.selected.lookupValue }}</div>\n                        <div ui-select-choices data-repeat=\"lookup in vm.options | filter:{lookupValue: $select.search}\n                            track by lookup.lookupId\">{{ lookup.lookupValue }}</div>\n                    </div>\n                </div>\n            </div>\n            <span ng-if=\"vm.loading\">loading...</span>"
+                    "<div ng-if=\"!vm.loading\">\n                <div ng-if=\"vm.multi\">\n                    <div ui-select multiple ng-model=\"vm.listItem[vm.key]\">\n                        <div ui-select-match placeholder=\"{{ vm.placeholder }}\">{{ $item.lookupValue }}</div>\n                        <div ui-select-choices data-repeat=\"lookup in vm.options | filter:{lookupValue: $select.search}\n                            track by lookup.lookupId\">{{ lookup.lookupValue }}</div>\n                    </div>\n                </div>\n                <div ng-if=\"!vm.multi\">\n                    <div ui-select ng-model=\"vm.listItem[vm.key]\">\n                        <div ui-select-match placeholder=\"{{ vm.placeholder }}\">{{ $select.selected.lookupValue }}</div>\n                        <div ui-select-choices data-repeat=\"lookup in vm.options | filter:{lookupValue: $select.search}\n                            track by lookup.lookupId\">{{ lookup.lookupValue }}</div>\n                    </div>\n                </div>\n            </div>\n            <span ng-if=\"vm.loading\">loading...</span>"
             };
             return directive;
         }
@@ -116,24 +115,22 @@ var ap;
             return sortedLookupValues;
         }
         var APLookupController = (function () {
-            function APLookupController($scope) {
+            function APLookupController() {
                 this.loading = true;
                 var vm = this;
                 //The property to use as the lookupValue if we need to build a Lookup[]
-                var lookupIdProperty = $scope.lookupIdProperty || 'id';
-                var lookupValueProperty = $scope.lookupValueProperty || 'title';
-                vm.listItem = $scope.listItem;
-                vm.key = $scope.key;
-                vm.multi = $scope.multi;
-                if ($scope.options.then) {
+                var lookupIdProperty = vm.to.lookupIdProperty || 'id';
+                var lookupValueProperty = vm.to.lookupValueProperty || 'title';
+                vm.placeholder = vm.to.placeholder || '';
+                if (vm.to.options.then) {
                     /** Options aren't resolved yet */
-                    $scope.options.then(function (options) {
+                    vm.to.options.then(function (options) {
                         vm.options = createLookupArray(options, lookupIdProperty, lookupValueProperty);
                         vm.loading = false;
                     });
                 }
                 else {
-                    vm.options = createLookupArray($scope.options, lookupIdProperty, lookupValueProperty);
+                    vm.options = createLookupArray(vm.to.options, lookupIdProperty, lookupValueProperty);
                     vm.loading = false;
                 }
             }
@@ -155,12 +152,12 @@ var ap;
                 formlyConfigProvider.setType({
                     name: 'lookup',
                     wrapper: ['bootstrapLabel', 'bootstrapHasError'],
-                    template: "<ap-lookup list-item=\"model\" key=\"options.key\" multi=\"false\" lookup-value-property=\"to.lookupValueProperty\" lookup-id-property=\"to.lookupIdProperty\" options=\"to.options\"></ap-lookup>"
+                    template: "<ap-lookup list-item=\"model\" key=\"options.key\" multi=\"false\" to=\"to\"></ap-lookup>"
                 });
                 formlyConfigProvider.setType({
                     name: 'lookup-multi',
                     wrapper: ['bootstrapLabel', 'bootstrapHasError'],
-                    template: "<ap-lookup list-item=\"model\" key=\"options.key\" multi=\"true\" lookup-value-property=\"to.lookupValueProperty\" lookup-id-property=\"to.lookupIdProperty\" options=\"to.options\"></ap-lookup>"
+                    template: "<ap-lookup list-item=\"model\" key=\"options.key\" multi=\"true\" to=\"to\"></ap-lookup>"
                 });
                 formlyConfigProvider.setType({
                     name: 'ui-date',
@@ -180,12 +177,12 @@ var ap;
                 formlyConfigProvider.setType({
                     name: 'choice',
                     wrapper: ['bootstrapLabel', 'bootstrapHasError'],
-                    template: "<ap-choice list-item=\"model\" key=\"options.key\" options=\"to.options\"></ap-choice>"
+                    template: "<ap-choice list-item=\"model\" key=\"options.key\" to=\"to\"></ap-choice>"
                 });
                 formlyConfigProvider.setType({
                     name: 'choice-multi',
                     wrapper: ['bootstrapLabel', 'bootstrapHasError'],
-                    template: "<ap-choice list-item=\"model\" key=\"options.key\" options=\"to.options\" multi=\"true\"></ap-choice>"
+                    template: "<ap-choice list-item=\"model\" key=\"options.key\" multi=\"true\" to=\"to\"></ap-choice>"
                 });
                 formlyConfigProvider.setType({
                     name: 'attachments',
