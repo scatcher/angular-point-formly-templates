@@ -20,15 +20,13 @@ module ap.formly {
           <div ng-if="vm.multi">
               <div ui-select multiple ng-model="vm.listItem[vm.key]">
                   <div ui-select-match placeholder="{{ vm.placeholder }}">{{ $item }}</div>
-                  <div ui-select-choices data-repeat="choice in vm.options | filter:$select.search
-                      track by $index">{{ choice }}</div>
+                  <div ui-select-choices data-repeat="choice in vm.options | filter:$select.search">{{ choice }}</div>
               </div>
           </div>
           <div ng-if="!vm.multi">
               <div ui-select ng-model="vm.listItem[vm.key]">
-                  <div ui-select-match placeholder="{{ vm.placeholder }}">{{ $select.selected }}</div>
-                  <div ui-select-choices data-repeat="choice in vm.options | filter:$select.search
-                      track by $index">{{ choice }}</div>
+                  <div ui-select-match placeholder="{{ vm.placeholder }}">{{ $item }}</div>
+                  <div ui-select-choices data-repeat="choice in vm.options | filter:$select.search">{{ choice }}</div>
               </div>
           </div>
       </div>
