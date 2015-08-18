@@ -92,13 +92,14 @@ var ap;
         }
         formly.APFormlyLookup = APFormlyLookup;
         function createLookupArray(options, lookupIdProperty, lookupValueProperty) {
-            var sortedLookupValues;
+            var sortedLookupValues = [];
             var sampleListItem = _.sample(options);
-            if (sampleListItem.hasOwnProperty('lookupId')) {
+            if (sampleListItem && sampleListItem.hasOwnProperty('lookupId')) {
                 /** Already valid lookup objects */
                 sortedLookupValues = _.sortBy(options, 'lookupValue');
             }
-            else {
+            else if (sampleListItem) {
+                /** List items that need to ve converted into lookup objects */
                 sortedLookupValues = _.chain(options)
                     .map(function (listItem) {
                     return {

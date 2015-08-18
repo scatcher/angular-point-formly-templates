@@ -41,12 +41,13 @@ module ap.formly {
     }
 
     function createLookupArray(options, lookupIdProperty: { (listItem: ListItem<any>): string } | string, lookupValueProperty: { (listItem: ListItem<any>): string } | string): Lookup[] {
-        var sortedLookupValues;
+        var sortedLookupValues = [];
         var sampleListItem = _.sample(options);
-        if (sampleListItem.hasOwnProperty('lookupId')) {
+        if (sampleListItem && sampleListItem.hasOwnProperty('lookupId')) {
             /** Already valid lookup objects */
             sortedLookupValues = _.sortBy(options, 'lookupValue');
-        } else {
+        } else if (sampleListItem) {
+            /** List items that need to ve converted into lookup objects */
             sortedLookupValues = _.chain(options)
                 .map(function(listItem: ListItem<any>) {
                     return {
