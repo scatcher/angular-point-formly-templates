@@ -18,16 +18,16 @@ module ap.formly {
       template: '' +
       `<div ng-if="!vm.loading">
           <div ng-if="vm.multi">
-              <div ui-select multiple ng-model="vm.listItem[vm.key]">
-                  <div ui-select-match placeholder="{{ vm.placeholder }}">{{ $item }}</div>
-                  <div ui-select-choices data-repeat="choice in vm.options | filter:$select.search">{{ choice }}</div>
-              </div>
+              <ui-select multiple ng-model="vm.listItem[vm.key]">
+                  <ui-select-match placeholder="{{ vm.placeholder }}">{{ $item }}</ui-select-match>
+                  <ui-select-choices data-repeat="choice in vm.options | filter:$select.search">{{ choice }}</ui-select-choices>
+              </ui-select>
           </div>
           <div ng-if="!vm.multi">
-              <div ui-select ng-model="vm.listItem[vm.key]">
-                  <div ui-select-match placeholder="{{ vm.placeholder }}">{{ $select.selected }}</div>
-                  <div ui-select-choices data-repeat="choice in vm.options | filter:$select.search">{{ choice }}</div>
-              </div>
+              <ui-select ng-model="vm.listItem[vm.key]">
+                  <ui-select-match placeholder="{{ vm.placeholder }}">{{ $select.selected }}</ui-select-match>
+                  <ui-select-choices data-repeat="choice in vm.options | filter:$select.search">{{ choice }}</ui-select-choices>
+              </ui-select>
           </div>
       </div>
       <span class="form-control" ng-if="vm.loading">loading...</span>`

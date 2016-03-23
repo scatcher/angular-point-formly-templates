@@ -20,18 +20,18 @@ module ap.formly {
             template: '' +
             `<div ng-if="!vm.loading">
                 <div ng-if="vm.multi">
-                    <div ui-select multiple ng-model="vm.listItem[vm.key]">
-                        <div ui-select-match placeholder="{{ vm.placeholder }}">{{ $item.lookupValue }}</div>
-                        <div ui-select-choices data-repeat="lookup in vm.options | filter:{lookupValue: $select.search}
-                            track by lookup.lookupId">{{ lookup.lookupValue }}</div>
-                    </div>
+                    <ui-select multiple ng-model="vm.listItem[vm.key]">
+                        <ui-select-match placeholder="{{ vm.placeholder }}">{{ $item.lookupValue }}</ui-select-match>
+                        <ui-select-choices data-repeat="lookup in vm.options | filter:{lookupValue: $select.search}
+                            track by lookup.lookupId">{{ lookup.lookupValue }}</ui-select-choices>
+                    </ui-select>
                 </div>
                 <div ng-if="!vm.multi">
-                    <div ui-select ng-model="vm.listItem[vm.key]">
-                        <div ui-select-match placeholder="{{ vm.placeholder }}">{{ $select.selected.lookupValue }}</div>
-                        <div ui-select-choices data-repeat="lookup in vm.options | filter:{lookupValue: $select.search}
-                            track by lookup.lookupId">{{ lookup.lookupValue }}</div>
-                    </div>
+                    <ui-select ng-model="vm.listItem[vm.key]">
+                        <ui-select-match placeholder="{{ vm.placeholder }}">{{ $select.selected.lookupValue }}</ui-select-match>
+                        <ui-select-choices data-repeat="lookup in vm.options | filter:{lookupValue: $select.search}
+                            track by lookup.lookupId">{{ lookup.lookupValue }}</ui-select-choices>
+                    </ui-select>
                 </div>
             </div>
             <span ng-if="vm.loading">loading...</span>`

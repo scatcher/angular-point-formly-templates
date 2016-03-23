@@ -16,7 +16,7 @@ var ap;
                 controller: APChoiceController,
                 controllerAs: 'vm',
                 template: '' +
-                    "<div ng-if=\"!vm.loading\">\n          <div ng-if=\"vm.multi\">\n              <div ui-select multiple ng-model=\"vm.listItem[vm.key]\">\n                  <div ui-select-match placeholder=\"{{ vm.placeholder }}\">{{ $item }}</div>\n                  <div ui-select-choices data-repeat=\"choice in vm.options | filter:$select.search\">{{ choice }}</div>\n              </div>\n          </div>\n          <div ng-if=\"!vm.multi\">\n              <div ui-select ng-model=\"vm.listItem[vm.key]\">\n                  <div ui-select-match placeholder=\"{{ vm.placeholder }}\">{{ $select.selected }}</div>\n                  <div ui-select-choices data-repeat=\"choice in vm.options | filter:$select.search\">{{ choice }}</div>\n              </div>\n          </div>\n      </div>\n      <span class=\"form-control\" ng-if=\"vm.loading\">loading...</span>"
+                    "<div ng-if=\"!vm.loading\">\n          <div ng-if=\"vm.multi\">\n              <ui-select multiple ng-model=\"vm.listItem[vm.key]\">\n                  <ui-select-match placeholder=\"{{ vm.placeholder }}\">{{ $item }}</ui-select-match>\n                  <ui-select-choices data-repeat=\"choice in vm.options | filter:$select.search\">{{ choice }}</ui-select-choices>\n              </ui-select>\n          </div>\n          <div ng-if=\"!vm.multi\">\n              <ui-select ng-model=\"vm.listItem[vm.key]\">\n                  <ui-select-match placeholder=\"{{ vm.placeholder }}\">{{ $select.selected }}</ui-select-match>\n                  <ui-select-choices data-repeat=\"choice in vm.options | filter:$select.search\">{{ choice }}</ui-select-choices>\n              </ui-select>\n          </div>\n      </div>\n      <span class=\"form-control\" ng-if=\"vm.loading\">loading...</span>"
             };
             return directive;
         }
@@ -63,7 +63,7 @@ var ap;
                 }
             }
             return APChoiceController;
-        })();
+        }());
     })(formly = ap.formly || (ap.formly = {}));
 })(ap || (ap = {}));
 
@@ -86,7 +86,7 @@ var ap;
                 controller: APLookupController,
                 controllerAs: 'vm',
                 template: '' +
-                    "<div ng-if=\"!vm.loading\">\n                <div ng-if=\"vm.multi\">\n                    <div ui-select multiple ng-model=\"vm.listItem[vm.key]\">\n                        <div ui-select-match placeholder=\"{{ vm.placeholder }}\">{{ $item.lookupValue }}</div>\n                        <div ui-select-choices data-repeat=\"lookup in vm.options | filter:{lookupValue: $select.search}\n                            track by lookup.lookupId\">{{ lookup.lookupValue }}</div>\n                    </div>\n                </div>\n                <div ng-if=\"!vm.multi\">\n                    <div ui-select ng-model=\"vm.listItem[vm.key]\">\n                        <div ui-select-match placeholder=\"{{ vm.placeholder }}\">{{ $select.selected.lookupValue }}</div>\n                        <div ui-select-choices data-repeat=\"lookup in vm.options | filter:{lookupValue: $select.search}\n                            track by lookup.lookupId\">{{ lookup.lookupValue }}</div>\n                    </div>\n                </div>\n            </div>\n            <span ng-if=\"vm.loading\">loading...</span>"
+                    "<div ng-if=\"!vm.loading\">\n                <div ng-if=\"vm.multi\">\n                    <ui-select multiple ng-model=\"vm.listItem[vm.key]\">\n                        <ui-select-match placeholder=\"{{ vm.placeholder }}\">{{ $item.lookupValue }}</ui-select-match>\n                        <ui-select-choices data-repeat=\"lookup in vm.options | filter:{lookupValue: $select.search}\n                            track by lookup.lookupId\">{{ lookup.lookupValue }}</ui-select-choices>\n                    </ui-select>\n                </div>\n                <div ng-if=\"!vm.multi\">\n                    <ui-select ng-model=\"vm.listItem[vm.key]\">\n                        <ui-select-match placeholder=\"{{ vm.placeholder }}\">{{ $select.selected.lookupValue }}</ui-select-match>\n                        <ui-select-choices data-repeat=\"lookup in vm.options | filter:{lookupValue: $select.search}\n                            track by lookup.lookupId\">{{ lookup.lookupValue }}</ui-select-choices>\n                    </ui-select>\n                </div>\n            </div>\n            <span ng-if=\"vm.loading\">loading...</span>"
             };
             return directive;
         }
@@ -136,7 +136,7 @@ var ap;
                 }
             }
             return APLookupController;
-        })();
+        }());
     })(formly = ap.formly || (ap.formly = {}));
 })(ap || (ap = {}));
 
@@ -197,7 +197,7 @@ var ap;
                 });
             }
             return FormlyTemplates;
-        })();
+        }());
         formly.FormlyTemplates = FormlyTemplates;
     })(formly = ap.formly || (ap.formly = {}));
 })(ap || (ap = {}));
