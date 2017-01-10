@@ -1,104 +1,98 @@
-/// <reference path="../typings/tsd.d.ts" />
+import * as _ from 'lodash';
+// import { ListItem } from '../angular-point/factories/apListItemFactory';
+// import { Lookup } from '../angular-point/factories/apLookupFactory';
+// import { IndexedCache } from '../angular-point/factories/apIndexedCacheFactory';
+import { IndexedCache, ListItem, Lookup } from 'angular-point';
 
-module ap.formly {
-    'use strict';
-
-    /* @ngInject */
-    export function APFormlyLookup() {
-
-        var directive = {
-            scope: {
-                key: '=',
-                listItem: '=',
-                multi: '=',
-                to: '='
-
-            },
-            bindToController: true,
-            controller: APLookupController,
-            controllerAs: 'vm',
-            template: '' +
-            `<div ng-if="!vm.loading">
-                <div ng-if="vm.multi">
-                    <ui-select multiple ng-model="vm.listItem[vm.key]">
-                        <ui-select-match placeholder="{{ vm.placeholder }}">{{ $item.lookupValue }}</ui-select-match>
-                        <ui-select-choices data-repeat="lookup in vm.options | filter:{lookupValue: $select.search}
-                            track by lookup.lookupId">{{ lookup.lookupValue }}</ui-select-choices>
-                    </ui-select>
-                </div>
-                <div ng-if="!vm.multi">
-                    <ui-select ng-model="vm.listItem[vm.key]">
-                        <ui-select-match placeholder="{{ vm.placeholder }}">{{ $select.selected.lookupValue }}</ui-select-match>
-                        <ui-select-choices data-repeat="lookup in vm.options | filter:{lookupValue: $select.search}
-                            track by lookup.lookupId">{{ lookup.lookupValue }}</ui-select-choices>
-                    </ui-select>
-                </div>
-            </div>
-            <span ng-if="vm.loading">loading...</span>`
-
-        };
-        return directive;
+function createLookupArray(options, lookupIdProperty: { (listItem: ListItem<any>): string } | string, lookupValueProperty: { (listItem: ListItem<any>): string } | string): Lookup<any>[] {
+    let sortedLookupValues = [];
+    const sampleListItem = _.sample(options);
+    if (sampleListItem && sampleListItem.hasOwnProperty('lookupId')) {
+        /** Already valid lookup objects */
+        sortedLookupValues = _.sortBy(options, 'lookupValue');
+    } else if (sampleListItem) {
+        /** List items that need to ve converted into lookup objects */
+        sortedLookupValues = _.chain(options)
+            .map(function (listItem: ListItem<any>) {
+                return {
+                    // Default is to use title for lookupValue and id for lookupId but optionally can pass in the property
+                    // to use for either or a function to return the value
+                    lookupId: _.isFunction(lookupIdProperty) ? lookupIdProperty(listItem) : listItem[lookupIdProperty],
+                    // can be calculated with either a function or a property name
+                    lookupValue: _.isFunction(lookupValueProperty) ? lookupValueProperty(listItem) : listItem[lookupValueProperty]
+                };
+            })
+            .sortBy('lookupValue')
+            .value();
     }
-
-    function createLookupArray(options, lookupIdProperty: { (listItem: ListItem<any>): string } | string, lookupValueProperty: { (listItem: ListItem<any>): string } | string): Lookup[] {
-        var sortedLookupValues = [];
-        var sampleListItem = _.sample(options);
-        if (sampleListItem && sampleListItem.hasOwnProperty('lookupId')) {
-            /** Already valid lookup objects */
-            sortedLookupValues = _.sortBy(options, 'lookupValue');
-        } else if (sampleListItem) {
-            /** List items that need to ve converted into lookup objects */
-            sortedLookupValues = _.chain(options)
-                .map(function(listItem: ListItem<any>) {
-                    return {
-                        //Default is to use title for lookupValue and id for lookupId but optionally can pass in the property to use for either or
-                        //a funtion to return the value
-                        lookupId: _.isFunction(lookupIdProperty) ? lookupIdProperty(listItem) : listItem[lookupIdProperty],
-                        //can be calculated with either a function or a property name
-                        lookupValue: _.isFunction(lookupValueProperty) ? lookupValueProperty(listItem) : listItem[lookupValueProperty]
-                    }
-                })
-                .sortBy('lookupValue')
-                .value();
-        }
-        return sortedLookupValues;
-    }
-    
-    interface ITemplateOptions extends AngularFormly.ITemplateOptions {
-        lookupIdProperty: { (listItem: ListItem<any>): string } | string;
-        lookupValueProperty: { (listItem: ListItem<any>): string } | string;
-        options: Object[] | IndexedCache<ListItem<any>> | ng.IPromise<Object[] | IndexedCache<ListItem<any>>>;
-    }
-
-
-    class APLookupController {
-        key: string;
-        listItem: Object;
-        loading = true;
-        multi: boolean;
-        options: Lookup[];
-        placeholder: string | number;
-        to: ITemplateOptions;
-        constructor() {
-            var vm = this;
-            //The property to use as the lookupValue if we need to build a Lookup[]
-            var lookupIdProperty = vm.to.lookupIdProperty || 'id';
-            var lookupValueProperty = vm.to.lookupValueProperty || 'title';
-            
-            vm.placeholder = vm.to.placeholder || '';
-
-            if (vm.to.options.then) {
-                /** Options aren't resolved yet */
-                vm.to.options.then(function(options) {
-                    vm.options = createLookupArray(options, lookupIdProperty, lookupValueProperty);
-                    vm.loading = false;
-                });
-            } else {
-                vm.options = createLookupArray(vm.to.options, lookupIdProperty, lookupValueProperty);
-                vm.loading = false;
-            }
-
-        }
-    }
-
+    return sortedLookupValues;
 }
+
+interface ITemplateOptions {
+    // interface ITemplateOptions extends AngularFormly.ITemplateOptions {
+    lookupIdProperty: { (listItem: ListItem<any>): string } | string;
+    lookupValueProperty: { (listItem: ListItem<any>): string } | string;
+    options: angular.IPromise<Object[] | IndexedCache<ListItem<any>>> | Object[] | IndexedCache<ListItem<any>> | any;
+    placeholder?: string;
+}
+
+
+class APLookupController {
+    static $inject = [];
+    key: string;
+    listItem: Object;
+    loading = true;
+    multi: boolean;
+    options: Lookup<any>[];
+    placeholder: string | number;
+    to: ITemplateOptions;
+    $onInit() {
+        const $ctrl = this;
+        // The property to use as the lookupValue if we need to build a Lookup[]
+        const lookupIdProperty = $ctrl.to.lookupIdProperty || 'id';
+        const lookupValueProperty = $ctrl.to.lookupValueProperty || 'title';
+
+        $ctrl.placeholder = $ctrl.to.placeholder || '';
+
+        if ($ctrl.to.options.then) {
+            /** Options aren't resolved yet */
+            $ctrl.to.options.then(function (options) {
+                $ctrl.options = createLookupArray(options, lookupIdProperty, lookupValueProperty);
+                $ctrl.loading = false;
+            });
+        } else {
+            $ctrl.options = createLookupArray($ctrl.to.options, lookupIdProperty, lookupValueProperty);
+            $ctrl.loading = false;
+        }
+
+    }
+}
+
+export const APFormlyLookupComponent = {
+    bindings: {
+        key: '<',
+        listItem: '<',
+        multi: '<',
+        to: '='
+
+    },
+    controller: APLookupController,
+    template: '' +
+    `<div ng-if="!$ctrl.loading">
+        <div ng-if="$ctrl.multi">
+            <ui-select multiple ng-model="$ctrl.listItem[$ctrl.key]" ng-disabled="$ctrl.to.disabled">
+                <ui-select-match placeholder="{{ $ctrl.placeholder }}">{{ $item.lookupValue }}</ui-select-match>
+                <ui-select-choices data-repeat="lookup in $ctrl.options | filter:{lookupValue: $select.search}
+                    track by lookup.lookupId">{{ lookup.lookupValue }}</ui-select-choices>
+            </ui-select>
+        </div>
+        <div ng-if="!$ctrl.multi">
+            <ui-select ng-model="$ctrl.listItem[$ctrl.key]" ng-disabled="$ctrl.to.disabled">
+                <ui-select-match placeholder="{{ $ctrl.placeholder }}">{{ $select.selected.lookupValue }}</ui-select-match>
+                <ui-select-choices data-repeat="lookup in $ctrl.options | filter:{lookupValue: $select.search}
+                    track by lookup.lookupId">{{ lookup.lookupValue }}</ui-select-choices>
+            </ui-select>
+        </div>
+    </div>
+    <span ng-if="$ctrl.loading">loading...</span>`
+};

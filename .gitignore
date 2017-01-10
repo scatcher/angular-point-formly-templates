@@ -1,20 +1,15 @@
-# Dependencies
 node_modules
-bower_components
 
-# Build
+reports
+typings
+out
 .tmp
-coverage
-report
+docs
+
+# Private
+/config/_private.conf.json
+.DS_Store
 
 # IDE
 .idea
-
-# TS Typings
-typings
-
-# Info we don't want stored on GitHub
-xml-cache
-test/mocks/offlineXML.js
-
-npm-debug.log
+.vscode

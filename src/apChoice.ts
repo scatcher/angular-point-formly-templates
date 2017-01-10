@@ -1,53 +1,17 @@
-/// <reference path="../typings/tsd.d.ts" />
+import { IndexedCache, ListItem } from 'angular-point';
 
-module ap.formly {
-  'use strict';
-
-  export function APFormlyChoice() {
-
-    var directive = {
-      scope: {
-        key: '=',
-        listItem: '=',
-        multi: '=',
-        to: '=' //Template Options
-      },
-      bindToController: true,
-      controller: APChoiceController,
-      controllerAs: 'vm',
-      template: '' +
-      `<div ng-if="!vm.loading">
-          <div ng-if="vm.multi">
-              <ui-select multiple ng-model="vm.listItem[vm.key]">
-                  <ui-select-match placeholder="{{ vm.placeholder }}">{{ $item }}</ui-select-match>
-                  <ui-select-choices data-repeat="choice in vm.options | filter:$select.search">{{ choice }}</ui-select-choices>
-              </ui-select>
-          </div>
-          <div ng-if="!vm.multi">
-              <ui-select ng-model="vm.listItem[vm.key]">
-                  <ui-select-match placeholder="{{ vm.placeholder }}">{{ $select.selected }}</ui-select-match>
-                  <ui-select-choices data-repeat="choice in vm.options | filter:$select.search">{{ choice }}</ui-select-choices>
-              </ui-select>
-          </div>
-      </div>
-      <span class="form-control" ng-if="vm.loading">loading...</span>`
-
-    };
-    return directive;
-  }
-
-  function createChoiceArray(options: string[] = []) {
+function createChoiceArray(options: string[] = []) {
     return options.sort();
-  }
+}
 
-  interface ITemplateOptions extends AngularFormly.ITemplateOptions {
+interface ITemplateOptions extends AngularFormly.ITemplateOptions {
     lookupIdProperty: { (listItem: ListItem<any>): string } | string;
     lookupValueProperty: { (listItem: ListItem<any>): string } | string;
-    options: Object[]| IndexedCache<ListItem<any>> | ng.IPromise<Object[]| IndexedCache<ListItem<any>>>;
-  }
+    options: Object[] | IndexedCache<ListItem<any>> | ng.IPromise<Object[] | IndexedCache<ListItem<any>>> | any;
+}
 
-
-  class APChoiceController {
+class APChoiceController {
+    static $inject = [];
     key: string;
     loading = true;
     listItem: ListItem<any>;
@@ -55,42 +19,67 @@ module ap.formly {
     options: string[];
     placeholder: string | number;
     to: ITemplateOptions;
-    constructor() {
-      var vm = this;
-      vm.placeholder = vm.to.placeholder || '';
-      var fieldDefinition = vm.listItem.getFieldDefinition(vm.key);
 
-      if (vm.to.options) {
-        if (vm.to.options.then) {
-          /** Options aren't resolved yet */
-          vm.to.options.then(function(options: string[]) {
-            vm.options = createChoiceArray(options);
-            vm.loading = false;
-          });
-        } else {
-          /** Options passed through directly */
-          vm.options = createChoiceArray(vm.to.options);
-          vm.loading = false;
-        }
-      } else if (fieldDefinition.choices || fieldDefinition.Choices) {
-        /** Options available on field definition within model */
-        vm.options = createChoiceArray(fieldDefinition.choices || fieldDefinition.Choices);
-        vm.loading = false;
-      } else {
-        /** Last chance, get list definition from server and look for choices */
-        var model = vm.listItem.getModel();
+    $onInit() {
+        const $ctrl = this;
+        $ctrl.placeholder = $ctrl.to.placeholder || '';
+        const fieldDefinition = $ctrl.listItem.getFieldDefinition($ctrl.key);
 
-        model.extendListMetadata()
-          .then(function() {
-            if (fieldDefinition.choices || fieldDefinition.Choices) {
-              vm.options = createChoiceArray(fieldDefinition.choices || fieldDefinition.Choices);
-              vm.loading = false;
+        if ($ctrl.to.options) {
+            if ($ctrl.to.options.then) {
+                /** Options aren't resolved yet */
+                $ctrl.to.options.then(function (options: string[]) {
+                    $ctrl.options = createChoiceArray(options);
+                    $ctrl.loading = false;
+                });
+            } else {
+                /** Options passed through directly */
+                $ctrl.options = createChoiceArray($ctrl.to.options);
+                $ctrl.loading = false;
             }
-          })
-      }
+        } else if (fieldDefinition.choices || fieldDefinition.Choices) {
+            /** Options available on field definition within model */
+            $ctrl.options = createChoiceArray(fieldDefinition.choices || fieldDefinition.Choices);
+            $ctrl.loading = false;
+        } else {
+            /** Last chance, get list definition from server and look for choices */
+            const model = $ctrl.listItem.getModel();
+
+            model.extendListMetadata()
+                .then(function () {
+                    if (fieldDefinition.choices || fieldDefinition.Choices) {
+                        $ctrl.options = createChoiceArray(fieldDefinition.choices || fieldDefinition.Choices);
+                        $ctrl.loading = false;
+                    }
+                })
+        }
 
     }
-  }
+}
 
 
+export const APFormlyChoiceComponent = {
+    bindings: {
+        key: '<',
+        listItem: '<',
+        multi: '<',
+        to: '=' //Template Options
+    },
+    controller: APChoiceController,
+    template: '' +
+    `<div ng-if="!$ctrl.loading">
+        <div ng-if="$ctrl.multi">
+            <ui-select multiple ng-model="$ctrl.listItem[$ctrl.key]" ng-disabled="$ctrl.to.disabled">
+                <ui-select-match placeholder="{{ $ctrl.placeholder }}">{{ $item }}</ui-select-match>
+                <ui-select-choices data-repeat="choice in $ctrl.options | filter:$select.search">{{ choice }}</ui-select-choices>
+            </ui-select>
+        </div>
+        <div ng-if="!$ctrl.multi">
+            <ui-select ng-model="$ctrl.listItem[$ctrl.key]" ng-disabled="$ctrl.to.disabled">
+                <ui-select-match placeholder="{{ $ctrl.placeholder }}">{{ $select.selected }}</ui-select-match>
+                <ui-select-choices data-repeat="choice in $ctrl.options | filter:$select.search">{{ choice }}</ui-select-choices>
+            </ui-select>
+        </div>
+    </div>
+    <span class="form-control" ng-if="$ctrl.loading">loading...</span>`
 }

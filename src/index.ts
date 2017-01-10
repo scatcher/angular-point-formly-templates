@@ -1,13 +1,16 @@
-/// <reference path="formlyTemplates.ts" />
+import * as angular from 'angular';
+
+import {AngularPointModule} from 'angular-point';
+// import {AngularPointModule} from '../angular-point/app.module';
+
+import { APFormlyLookupComponent } from './apLookup';
+import { APFormlyChoiceComponent } from './apChoice';
+import { FormlyTemplates } from './formlyTemplates';
 
 
-module ap.formly {
-    'use strict';
-
-    angular
-        .module('angularPoint')
-        .config(ap.formly.FormlyTemplates)
-        .directive('apLookup', ap.formly.APFormlyLookup)
-        .directive('apChoice', ap.formly.APFormlyChoice);
-
-}
+// angular
+//     .module('angularPoint')
+AngularPointModule
+    .config(FormlyTemplates)
+    .component('apLookup', APFormlyLookupComponent)
+    .component('apChoice', APFormlyChoiceComponent);
