@@ -4,13 +4,13 @@ function createChoiceArray(options: string[] = []) {
     return options.sort();
 }
 
-interface ITemplateOptions extends AngularFormly.ITemplateOptions {
+export interface ITemplateOptions extends AngularFormly.ITemplateOptions {
     lookupIdProperty: { (listItem: ListItem<any>): string } | string;
     lookupValueProperty: { (listItem: ListItem<any>): string } | string;
     options: Object[] | IndexedCache<ListItem<any>> | ng.IPromise<Object[] | IndexedCache<ListItem<any>>> | any;
 }
 
-class APChoiceController {
+export class APChoiceController {
     static $inject = [];
     key: string;
     loading = true;

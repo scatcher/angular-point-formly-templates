@@ -1,7 +1,4 @@
 import * as _ from 'lodash';
-// import { ListItem } from '../angular-point/factories/apListItemFactory';
-// import { Lookup } from '../angular-point/factories/apLookupFactory';
-// import { IndexedCache } from '../angular-point/factories/apIndexedCacheFactory';
 import { IndexedCache, ListItem, Lookup } from 'angular-point';
 
 function createLookupArray(options, lookupIdProperty: { (listItem: ListItem<any>): string } | string, lookupValueProperty: { (listItem: ListItem<any>): string } | string): Lookup<any>[] {
@@ -28,7 +25,7 @@ function createLookupArray(options, lookupIdProperty: { (listItem: ListItem<any>
     return sortedLookupValues;
 }
 
-interface ITemplateOptions {
+export interface ITemplateOptions {
     // interface ITemplateOptions extends AngularFormly.ITemplateOptions {
     lookupIdProperty: { (listItem: ListItem<any>): string } | string;
     lookupValueProperty: { (listItem: ListItem<any>): string } | string;
@@ -37,7 +34,7 @@ interface ITemplateOptions {
 }
 
 
-class APLookupController {
+export class APLookupController {
     static $inject = [];
     key: string;
     listItem: Object;
